@@ -6,9 +6,18 @@ var graphSize = {
   bars: 100,
   size: 1000
 }
-for (var i = 0; i < graphSize.bars; i++) {
-  data.push({num: i, value: Math.random()*graphSize.size});
+function genSize() {
+  var cur = 50 + Math.random()*(graphSize.size-50);
+  for (var i = 0; i < graphSize.bars; i++) {
+    var rando = -999;
+    while (Math.abs(cur - rando) > 150) {
+      rando = 50 + Math.random()*(graphSize.size-50);
+    }
+    cur = rando;
+    data[i] = {num: i, value: rando};
+  }
 }
+genSize();
 
 var svg = d3.select('.graph').append('svg')
             .attr('height', graphSize.height)
@@ -48,9 +57,7 @@ svg.append('g').attr('class', 'yAxis')
   .call(yAxis);
 
 setInterval(function() {
-  data.forEach(function(obj) {
-    obj.value = Math.random()*graphSize.size;
-  })
+  genSize();
   svg.selectAll('.bar').data(data, function(d) {
     return d.num;
   }).transition().duration(500)
